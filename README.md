@@ -1,1 +1,1 @@
-# html5_game_x_and_zero
+# X and Zero Game (Phaser.js)
