@@ -3,10 +3,17 @@ let state = {
     mode: '',
     users: []
 };
+const fields = [
+    [0, 1, 2],
+    [0, 1, 2],
+    [0, 1, 2]
+]
 const store = window.localStorage;
 const startPage = document.querySelector('.start-mode');
+const form = document.getElementsByTagName('form');
 const buttonGroupDiv = document.querySelector('.button-group');
 const buttons = buttonGroupDiv.querySelectorAll('button');
+const zone = document.createElement('div');
 const buttonArray = [...buttons];
 const submitButton = document.createElement('button');
 const gamepad = document.querySelector('.gamepad')
@@ -103,6 +110,61 @@ function setDisable() {
 function setState(value) {
     state.mode = value;
 }
+function startGame() {
+    const [formElement] = form;
+    formElement.style.display = 'none';
+    zone.classList.add('game-zone');
+    const loader = document.createElement('h2');
+    loader.innerHTML = 'Loading...';
+    zone.append(loader)
+    createHeader();
+    createMain();
+    createFooter();
+    setTimeout(() => {
+        loader.style.display = 'none'
+    }, 200)
+
+    gamepad.append(zone)
+}
+const createHeader = () => {
+    const header = document.createElement('header');
+    const score1 = document.createElement('div');
+    const status = document.createElement('div');
+    const score2 = document.createElement('div');
+    [score1, status, score2].map(el => el.classList.add('header__item'));
+    score1.style.backgroundColor = '#48D2FE';
+    status.style.backgroundColor = '#BCDBF9';
+    score2.style.backgroundColor = '#E2BE00';
+    const [player1, player2] = state.users;
+    score1.innerHTML = player1.name;
+    score2.innerHTML = player2?.name ?? ' PC';
+    header.append(score1);
+    header.append(status);
+    header.append(score2);
+    zone.append(header)
+}
+const createMain = () => {
+    const main = document.createElement('main');
+    fields.map(line=>{
+        line.map((item, index)=>{
+            const field = document.createElement('div');
+            field.id = `${item}-${index}`
+            field.classList.add('main__item');
+            field.style.backgroundColor = '#43115B'
+            main.append(field)
+            zone.append(main);
+        })
+    })
+   
+}
+const createFooter = () => {
+    const [player1, player2] = state.users;
+    const footer = document.createElement('footer'); 
+    const current = document.createElement('h2');
+    current.innerHTML = `Next step: player ${player1.name}!`
+    footer.append(current);
+    zone.append(footer);
+}
 buttonArray.forEach((button) => button.addEventListener('click', function () {
     buttonArray.map(button => button.disabled = true)
     setState(this.id);
@@ -111,3 +173,7 @@ buttonArray.forEach((button) => button.addEventListener('click', function () {
         createForm();
     }, 1200);
 }))
+submitButton.addEventListener('click', function (e) {
+    e.preventDefault()
+    startGame();
+})

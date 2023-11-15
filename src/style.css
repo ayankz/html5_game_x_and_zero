@@ -119,9 +119,11 @@ label {
 
 form {
     display: flex;
+    opacity: 1;
     flex-direction: column;
     position: relative;
     height: 100%;
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
 }
 
 form img {
@@ -169,4 +171,45 @@ form button:disabled {
 form button:hover {
     transform: scale(1.1);
     cursor: pointer;
+}
+.game-zone{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+}
+.game-zone h2{
+    font-size: 25px;
+    font-weight: 600;
+    color: #E2BE00;
+}
+.game-zone header,main {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    justify-content: space-between;
+    gap:20px;
+    margin-bottom: 50px;
+}
+
+header .header__item, .main__item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 105px;
+    height: 80px;
+    font-size: 20;
+    font-weight: 600;
+    padding: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 10px;
+}
+footer h2 {
+    font-size: 25px;
+    font-weight: 600;
+    color: #E2BE00;
 }
