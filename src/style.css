@@ -137,11 +137,12 @@ form img:hover {
 
 .images-container {
     display: flex;
-    gap:30px;
+    gap: 30px;
     align-items: center;
     justify-content: space-between;
 }
-form button{
+
+form button {
     padding: 10px;
     position: relative;
     bottom: -50px;
@@ -155,14 +156,17 @@ form button{
     background-color: #E2BE00;
     transition: box-shadow 0.3s ease-in-out;
 }
-form button:hover{
+
+form button:hover {
     transform: scale(1.1);
     cursor: pointer;
 }
-form button:disabled{
+
+form button:disabled {
     background-color: aliceblue;
 }
-form button:hover{
-    transform: scale(1);
+
+form button:hover {
+    transform: scale(1.1);
     cursor: pointer;
 }

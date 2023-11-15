@@ -10,48 +10,12 @@ const buttons = buttonGroupDiv.querySelectorAll('button');
 const buttonArray = [...buttons];
 const submitButton = document.createElement('button');
 const gamepad = document.querySelector('.gamepad')
-const tic = {
-    x1: 20,
-    y1: 20,
-    x2: 80,
-    y2: 80
-}
-let circle = {
-    x: 20,
-    y: 55,
-    size: 40,
-    lineWidth: 10,
-    color: '#E2BE00',
-    angle: 0
-}
-const x = document.createElement('canvas');
-x.width = 120;
-x.height = 120;
-x.addEventListener('mouseenter', () => animateX())
-x.addEventListener('mouseleave', () => {
-    cancelAnimationFrame(animationId);
-    ctx.clearRect(0, 0, x.width, x.height);
-    tic.x1 = 20;
-    tic.x2 = 80;
-    drawX()
-})
 
-const ctx = x.getContext('2d');
-const zero = document.createElement('canvas');
-const ctx_zero = zero.getContext('2d');
-zero.width = 120;
-zero.height = 120;
-// zero.addEventListener('mouseenter', () => animateZero())
-// zero.addEventListener('mouseleave', () => {
-//     cancelAnimationFrame(animationId2);
-//     drawZero();
-// })
 function hideStartPage() {
     setTimeout(() => {
         startPage.style.opacity = '0';
     }, 600);
 }
-
 function createForm() {
     store.clear()
     startPage.style.display = 'none';
@@ -122,68 +86,25 @@ function createForm() {
         setDisable()
     })
 }
-
 function setDisable() {
     const { mode, users, selectedtype } = state;
     const images = Array.from(document.querySelectorAll('.images-container img'));
     images.map(el => el.style.border = '')
     if (selectedtype) {
-        document.querySelector(`#${selectedtype}`).style.transform = 'scale(1.3)'
+        document.querySelector(`#${selectedtype}`).style.transform = 'scale(1.35)'
     }
-    if (mode === 'multiplayer' && state.users.length ===2 && selectedtype || mode != 'multiplayer' && state.users.length === 1 && selectedtype) {
+    if (mode === 'multiplayer' && state.users.length === 2 && selectedtype || mode != 'multiplayer' && state.users.length === 1 && selectedtype) {
         submitButton.disabled = false
     } else {
         submitButton.disabled = true
     }
 
 }
-let animationId;
-let animationId2;
-function drawX() {
-    ctx.beginPath();
-    ctx.moveTo(tic.x1, tic.y1);
-    ctx.lineTo(tic.x2, tic.y2);
-    ctx.moveTo(tic.x2, tic.y1);
-    ctx.lineTo(tic.x1, tic.y2);
-    ctx.lineWidth = 15;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#48D2FE';
-    ctx.stroke();
-}
-function drawZero() {
-    const { x, y, size, color, lineWidth, angle } = circle
-    ctx_zero.beginPath(20, 20);
-    ctx_zero.arc(x + Math.cos(angle) * size, y + Math.sin(angle) * size, size, 0, Math.PI * 2, true)
-    ctx_zero.strokeStyle = color;
-    ctx_zero.lineWidth = lineWidth
-    ctx_zero.stroke();
-}
-let value = 0;
-function animateX() {
-    ctx.clearRect(0, 0, x.width, x.height);
-    drawX();
-    tic.x1 += 3;
-    tic.x2 -= 3;
-    if (tic.x1 > 80) {
-        tic.x1 = 20;
-        tic.x2 = 80;
-    }
-    animationId = requestAnimationFrame(animateX);
-}
-
-function animateZero() {
-    ctx_zero.clearRect(0, 0, zero.width, zero.height)
-    drawZero();
-    let y = circle.y;
-    y += 0.1
-    animationId2 = requestAnimationFrame(animateZero);
-}
 function setState(value) {
     state.mode = value;
 }
-
 buttonArray.forEach((button) => button.addEventListener('click', function () {
-    buttonArray.map(button=>button.disabled = true)
+    buttonArray.map(button => button.disabled = true)
     setState(this.id);
     hideStartPage();
     setTimeout(() => {
