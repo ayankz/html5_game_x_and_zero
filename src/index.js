@@ -16,6 +16,9 @@ const buttons = buttonGroupDiv.querySelectorAll('button');
 const zone = document.createElement('div');
 const buttonArray = [...buttons];
 const submitButton = document.createElement('button');
+const header = document.createElement('header');
+const main = document.createElement('main');
+const footer = document.createElement('footer'); 
 const gamepad = document.querySelector('.gamepad')
 
 function hideStartPage() {
@@ -115,19 +118,19 @@ function startGame() {
     formElement.style.display = 'none';
     zone.classList.add('game-zone');
     const loader = document.createElement('h2');
-    loader.innerHTML = 'Loading...';
+    // loader.innerHTML = 'Loading...';
     zone.append(loader)
     createHeader();
     createMain();
     createFooter();
-    setTimeout(() => {
-        loader.style.display = 'none'
-    }, 200)
-
+    [...main.children].map(child=>{
+        child.addEventListener('click', function(){
+            console.log(this)
+        })
+    })
     gamepad.append(zone)
 }
 const createHeader = () => {
-    const header = document.createElement('header');
     const score1 = document.createElement('div');
     const status = document.createElement('div');
     const score2 = document.createElement('div');
@@ -144,7 +147,6 @@ const createHeader = () => {
     zone.append(header)
 }
 const createMain = () => {
-    const main = document.createElement('main');
     fields.map(line=>{
         line.map((item, index)=>{
             const field = document.createElement('div');
@@ -155,11 +157,9 @@ const createMain = () => {
             zone.append(main);
         })
     })
-   
 }
 const createFooter = () => {
     const [player1, player2] = state.users;
-    const footer = document.createElement('footer'); 
     const current = document.createElement('h2');
     current.innerHTML = `Next step: player ${player1.name}!`
     footer.append(current);
@@ -177,3 +177,5 @@ submitButton.addEventListener('click', function (e) {
     e.preventDefault()
     startGame();
 })
+// console.log(document.querySelector('.main__item'))
+
