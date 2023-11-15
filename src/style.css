@@ -1,0 +1,168 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    background: #5A1E76;
+    min-height: 100vh;
+    height: 100%;
+    padding-top: 100px;
+
+}
+
+.logo {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: auto;
+}
+
+.gamepad {
+    display: flex;
+    width: 500px;
+    height: 600px;
+    padding: 50px;
+    flex-direction: column;
+    font-family: Fredoka;
+    align-items: center;
+    gap: 40px;
+    border-radius: 50px;
+    background: #2B0040;
+    margin: 0 auto;
+}
+
+.start-mode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Fredoka;
+    transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+}
+
+canvas {
+    cursor: pointer;
+}
+
+.button-group {
+    margin: 50px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+}
+
+.button-group button {
+    padding: 10px;
+    border-radius: 10px;
+    width: 300px;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    background-color: #E2BE00;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.canvas-container {
+    display: flex;
+    padding: 10px;
+    gap: 40px;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+}
+
+button:active {
+    background-color: #9a820a;
+}
+
+.button-group button:hover {
+    transform: scale(1.1);
+}
+
+.start-mode h1 {
+    color: #fff;
+    font-size: 30px;
+    font-style: bold;
+    font-weight: 500;
+    line-height: normal;
+}
+
+input {
+    width: 100%;
+    background: #eff6ff;
+    opacity: 0.5;
+    padding: 10px;
+    padding-left: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #48D2FE;
+    font-size: 17px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #5A1E76;
+    margin: 20px 0;
+}
+
+label {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+}
+
+form img {
+    width: 60px;
+    height: 60px;
+    margin: 30px 10px;
+}
+
+form img:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.images-container {
+    display: flex;
+    gap:30px;
+    align-items: center;
+    justify-content: space-between;
+}
+form button{
+    padding: 10px;
+    position: relative;
+    bottom: -50px;
+    border-radius: 10px;
+    width: 150px;
+    border: none;
+    margin: 0 auto;
+    font-size: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    background-color: #E2BE00;
+    transition: box-shadow 0.3s ease-in-out;
+}
+form button:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+}
+form button:disabled{
+    background-color: aliceblue;
+}
+form button:hover{
+    transform: scale(1);
+    cursor: pointer;
+}
