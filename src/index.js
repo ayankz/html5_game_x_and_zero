@@ -128,25 +128,7 @@ const startGame = () => {
     createFooter();
     [...main.children].map(child => {
         child.addEventListener('click', function () {
-            child.disabled = true;
-            const canvas = document.createElement('canvas');
-            canvas.width = 90;
-            canvas.height = 70;
-            const context = canvas.getContext('2d')
-            const ctx = canvas.getContext('2d')
-            let x = 0;
-            let y = 0;
-            const animationSpeed = 5;
-            if (state.selectedtype === 'x') {
-                drawX();
-                update();
-                child.append(canvas);
-            }
-            else {
-                drawZero();
-                child.append(canvas);
-            }
-            function drawX() {
+            const drawX = () => {
                 state = { ...state, selectedtype: 'zero' }
                 context.beginPath();
                 context.moveTo(15, 10);
@@ -158,7 +140,7 @@ const startGame = () => {
                 draw2();
 
             }
-            function draw2() {
+            const draw2 = () => {
                 ctx.beginPath();
                 ctx.moveTo(70, 10);
                 ctx.lineTo(10, 65);
@@ -167,7 +149,7 @@ const startGame = () => {
                 ctx.strokeStyle = '#48D2FE';
                 ctx.stroke();
             }
-            function update() {
+            const update = () => {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 x = x + animationSpeed;
                 y = y + animationSpeed;
@@ -176,7 +158,7 @@ const startGame = () => {
                     requestAnimationFrame(update);
                 }
             }
-            function drawZero() {
+            const drawZero = () => {
                 state = { ...state, selectedtype: 'x' }
                 context.beginPath();
                 context.clearRect(0, 0, canvas.width, canvas.height);
@@ -185,7 +167,28 @@ const startGame = () => {
                 context.strokeStyle = '#E2BE00';
                 context.stroke();
             }
-
+            fields[child.id] = state.selectedtype;
+            child.disabled = true;
+            const canvas = document.createElement('canvas');
+            // canvas.id = child.id;
+            canvas.width = 90;
+            canvas.height = 70;
+            const context = canvas.getContext('2d')
+            const ctx = canvas.getContext('2d')
+            let x = 0;
+            let y = 0;
+            const animationSpeed = 5;
+            if (state.selectedtype === 'x') {
+                drawX();
+                update();
+                child.append(canvas);
+                isWin();
+            }
+            else {
+                drawZero();
+                child.append(canvas);
+                isWin();
+            }
         })
     })
     gamepad.append(zone)
@@ -223,8 +226,68 @@ const createFooter = () => {
     footer.append(current);
     zone.append(footer);
 }
+const drawHorizontalLine = (second, canvas) => {
+    const line = Math.round(second/3) + 1;
+                const cuttingArea = {
+                    1:40,
+                    2:140,
+                    3:240,
+                }
+                const ctx = canvas.getContext('2d');
+                ctx.beginPath();
+                ctx.moveTo(10, cuttingArea[line]);
+                ctx.lineTo(350, cuttingArea[line]);
+                ctx.lineWidth = 20;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = 'red';
+                ctx.stroke();
+}
+const drawHDiagonalLine = (first, canvas) => {
+    console.log(first)
+                const x1 = first > 0 ? 360 : 20
+                const y1 = 20;
+                const x2 = first > 0 ? 20 : 360;
+                const y2 = 260;
+                const ctx = canvas.getContext('2d');
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineWidth = 20;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = 'red';
+                ctx.stroke();
+}
 const isWin = () => {
-    
+    let hasWinner = false;
+    for (let i = 0; i <= 7; i++) {
+        const winCondition = winPatterns[i];
+        let a = fields[winCondition[0]];
+        let b = fields[winCondition[1]];
+        let c = fields[winCondition[2]];
+        if (a === '' || b === '' || c === '') {
+            continue;
+        }
+        if (a === b && b === c) {
+            hasWinner = true;
+            let first = winCondition[0];
+            let second = winCondition[1];
+            let last = winCondition[2];
+            const main = document.querySelector('main')
+            const canvas = document.createElement('canvas');
+            canvas.classList.add('line');
+            canvas.width = 380;
+            canvas.height =280;
+            main.append(canvas);
+            if (second + 1 == last){
+                drawHorizontalLine(second,canvas);
+            } else if (second + 3 == last) {
+            //    drawHDiagonalLine(first, canvas)
+            } else {
+                drawHDiagonalLine(first, canvas)
+            }
+            [...main.children].map(child=>child.disabled = true)
+            break
+        }
+    }
 }
 // E V E N T   H A N D L E R S
 buttonArray.forEach((button) => button.addEventListener('click', function () {

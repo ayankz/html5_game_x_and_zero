@@ -219,3 +219,6 @@ footer h2 {
     position: relative;
     top:-10px;
 }
+.line{
+    position: absolute;
+}
