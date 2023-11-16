@@ -1,15 +1,19 @@
-
+// V A R I A B L E S
 let state = {
     mode: '',
     users: []
 };
-const fields = [
+const fields = ['', '', '', '', '', '', '', '', ''];
+const winPatterns = [
     [0, 1, 2],
-    [0, 1, 2],
-    [0, 1, 2]
-]
-const store = window.localStorage;
-
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
 const startPage = document.querySelector('.start-mode');
 const form = document.getElementsByTagName('form');
 const buttonGroupDiv = document.querySelector('.button-group');
@@ -22,13 +26,14 @@ const main = document.createElement('main');
 const footer = document.createElement('footer');
 const gamepad = document.querySelector('.gamepad')
 
-function hideStartPage() {
+
+// F U N C T I O N S
+const hideStartPage = () => {
     setTimeout(() => {
         startPage.style.opacity = '0';
     }, 600);
 }
-function createForm() {
-    store.clear()
+const createForm = () => {
     startPage.style.display = 'none';
     const form = document.createElement('form');
     const input = document.createElement('input');
@@ -97,7 +102,7 @@ function createForm() {
         setDisable()
     })
 }
-function setDisable() {
+const setDisable = () => {
     const { mode, users, selectedtype } = state;
     const images = Array.from(document.querySelectorAll('.images-container img'));
     images.map(el => el.style.border = '')
@@ -111,10 +116,7 @@ function setDisable() {
     }
 
 }
-function setState(value) {
-    state.mode = value;
-}
-function startGame() {
+const startGame = () => {
     const [formElement] = form;
     formElement.style.display = 'none';
     zone.classList.add('game-zone');
@@ -135,17 +137,26 @@ function startGame() {
             let x = 0;
             let y = 0;
             const animationSpeed = 5;
-            draw();
-            update();
-            function draw() {
-              context.beginPath();
-              context.moveTo(15, 10);
-              context.lineTo(x, y);
-              context.lineWidth = 10;
-              context.lineCap = 'round';
-              context.strokeStyle = '#48D2FE';
-              context.stroke();
-              draw2();
+            if (state.selectedtype === 'x') {
+                drawX();
+                update();
+                child.append(canvas);
+            }
+            else {
+                drawZero();
+                child.append(canvas);
+            }
+            function drawX() {
+                state = { ...state, selectedtype: 'zero' }
+                context.beginPath();
+                context.moveTo(15, 10);
+                context.lineTo(x, y);
+                context.lineWidth = 10;
+                context.lineCap = 'round';
+                context.strokeStyle = '#48D2FE';
+                context.stroke();
+                draw2();
+
             }
             function draw2() {
                 ctx.beginPath();
@@ -155,18 +166,26 @@ function startGame() {
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = '#48D2FE';
                 ctx.stroke();
-              }
-            function update() {
-                console.log('started uodate')
-              context.clearRect(0, 0, canvas.width, canvas.height);
-              x = x + animationSpeed;
-              y = y + animationSpeed;
-              draw();
-              if (x < 65){
-                requestAnimationFrame(update);
-              }
             }
-            this.append(canvas)
+            function update() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                x = x + animationSpeed;
+                y = y + animationSpeed;
+                drawX();
+                if (x < 65) {
+                    requestAnimationFrame(update);
+                }
+            }
+            function drawZero() {
+                state = { ...state, selectedtype: 'x' }
+                context.beginPath();
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.arc(45, 35, 28, 0, Math.PI * 2);
+                context.lineWidth = 8;
+                context.strokeStyle = '#E2BE00';
+                context.stroke();
+            }
+
         })
     })
     gamepad.append(zone)
@@ -189,15 +208,12 @@ const createHeader = () => {
 }
 const createMain = () => {
     fields.map((line, idx) => {
-        console.log(idx)
-        line.map((item, index) => {
-            const field = document.createElement('button');
-            field.id = `${idx}-${index}`
-            field.classList.add('main__item');
-            field.style.backgroundColor = '#43115B'
-            main.append(field)
-            zone.append(main);
-        })
+        const field = document.createElement('button');
+        field.id = `${idx}`
+        field.classList.add('main__item');
+        field.style.backgroundColor = '#43115B'
+        main.append(field)
+        zone.append(main);
     })
 }
 const createFooter = () => {
@@ -207,9 +223,13 @@ const createFooter = () => {
     footer.append(current);
     zone.append(footer);
 }
+const isWin = () => {
+    
+}
+// E V E N T   H A N D L E R S
 buttonArray.forEach((button) => button.addEventListener('click', function () {
     buttonArray.map(button => button.disabled = true)
-    setState(this.id);
+    state.mode = this.id;
     hideStartPage();
     setTimeout(() => {
         createForm();
@@ -219,5 +239,4 @@ submitButton.addEventListener('click', function (e) {
     e.preventDefault()
     startGame();
 })
-// console.log(document.querySelector('.main__item'))
 
