@@ -207,9 +207,15 @@ header .header__item, .main__item{
     text-transform: uppercase;
     letter-spacing: 1px;
     border-radius: 10px;
+    border: none;
+    cursor: pointer;
 }
 footer h2 {
     font-size: 25px;
     font-weight: 600;
     color: #E2BE00;
+}
+.main__item canvas {
+    position: relative;
+    top:-10px;
 }

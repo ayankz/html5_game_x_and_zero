@@ -9,6 +9,7 @@ const fields = [
     [0, 1, 2]
 ]
 const store = window.localStorage;
+
 const startPage = document.querySelector('.start-mode');
 const form = document.getElementsByTagName('form');
 const buttonGroupDiv = document.querySelector('.button-group');
@@ -18,7 +19,7 @@ const buttonArray = [...buttons];
 const submitButton = document.createElement('button');
 const header = document.createElement('header');
 const main = document.createElement('main');
-const footer = document.createElement('footer'); 
+const footer = document.createElement('footer');
 const gamepad = document.querySelector('.gamepad')
 
 function hideStartPage() {
@@ -123,9 +124,49 @@ function startGame() {
     createHeader();
     createMain();
     createFooter();
-    [...main.children].map(child=>{
-        child.addEventListener('click', function(){
-            console.log(this)
+    [...main.children].map(child => {
+        child.addEventListener('click', function () {
+            child.disabled = true;
+            const canvas = document.createElement('canvas');
+            canvas.width = 90;
+            canvas.height = 70;
+            const context = canvas.getContext('2d')
+            const ctx = canvas.getContext('2d')
+            let x = 0;
+            let y = 0;
+            const animationSpeed = 5;
+            draw();
+            update();
+            function draw() {
+              context.beginPath();
+              context.moveTo(15, 10);
+              context.lineTo(x, y);
+              context.lineWidth = 10;
+              context.lineCap = 'round';
+              context.strokeStyle = '#48D2FE';
+              context.stroke();
+              draw2();
+            }
+            function draw2() {
+                ctx.beginPath();
+                ctx.moveTo(70, 10);
+                ctx.lineTo(10, 65);
+                ctx.lineWidth = 10;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#48D2FE';
+                ctx.stroke();
+              }
+            function update() {
+                console.log('started uodate')
+              context.clearRect(0, 0, canvas.width, canvas.height);
+              x = x + animationSpeed;
+              y = y + animationSpeed;
+              draw();
+              if (x < 65){
+                requestAnimationFrame(update);
+              }
+            }
+            this.append(canvas)
         })
     })
     gamepad.append(zone)
@@ -147,10 +188,11 @@ const createHeader = () => {
     zone.append(header)
 }
 const createMain = () => {
-    fields.map(line=>{
-        line.map((item, index)=>{
-            const field = document.createElement('div');
-            field.id = `${item}-${index}`
+    fields.map((line, idx) => {
+        console.log(idx)
+        line.map((item, index) => {
+            const field = document.createElement('button');
+            field.id = `${idx}-${index}`
             field.classList.add('main__item');
             field.style.backgroundColor = '#43115B'
             main.append(field)
