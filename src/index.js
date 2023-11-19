@@ -1,9 +1,12 @@
 // V A R I A B L E S
 let state = {
     mode: '',
-    users: []
+    users: [],
+    nextPlayer: '',
+    hasWinner: false
 };
-const fields = ['', '', '', '', '', '', '', '', ''];
+
+let fields = ['', '', '', '', '', '', '', '', ''];
 const winPatterns = [
     [0, 1, 2],
     [3, 4, 5],
@@ -14,28 +17,41 @@ const winPatterns = [
     [0, 4, 8],
     [2, 4, 6]
 ];
-const startPage = document.querySelector('.start-mode');
-const form = document.getElementsByTagName('form');
-const buttonGroupDiv = document.querySelector('.button-group');
-const buttons = buttonGroupDiv.querySelectorAll('button');
+const startPage = document.createElement('div');
+const form = document.createElement('form');
 const zone = document.createElement('div');
-const buttonArray = [...buttons];
 const submitButton = document.createElement('button');
 const header = document.createElement('header');
 const main = document.createElement('main');
 const footer = document.createElement('footer');
 const gamepad = document.querySelector('.gamepad')
-
+const reloadButton = document.createElement('button');
 
 // F U N C T I O N S
-const hideStartPage = () => {
-    setTimeout(() => {
-        startPage.style.opacity = '0';
-    }, 600);
+const openStarPage = () => {
+    zone.innerHTML = '';
+    startPage.classList.add('start-mode')
+    const header = document.createElement('h1');
+    header.innerHTML = 'Choose game mode';
+    const button = document.createElement('button');
+    button.setAttribute('id', 'multiplayer');
+    button.textContent = 'Player1 Vs Player2'
+    const image = document.createElement('img');
+    image.setAttribute('src', 'assets/image.svg')
+    startPage.append(header);
+    startPage.append(button);
+    startPage.append(image);
+    gamepad.append(startPage);
+    button.addEventListener('click', function (){
+        console.log('dasdsa')
+        state.mode = this.id;
+        startPage.innerHTML = '';
+        startPage.remove()
+        createForm();
+    })
 }
 const createForm = () => {
-    startPage.style.display = 'none';
-    const form = document.createElement('form');
+    startPage.remove();
     const input = document.createElement('input');
     const label = document.createElement('label');
     const label2 = document.createElement('label');
@@ -57,7 +73,6 @@ const createForm = () => {
     input.setAttribute('name', 'playerName1')
     form.append(label)
     form.append(input)
-
     if (state.mode != 'single-player') {
         const input2 = document.createElement('input');
         const label3 = document.createElement('label');
@@ -88,6 +103,7 @@ const createForm = () => {
         } else {
             state.users = [...state.users.filter(el => el.id != input1.name)]
         }
+        state.nextPlayer = e.target.value;
         setDisable()
     })
     const [x, zero] = document.querySelectorAll('.images-container img');
@@ -117,17 +133,18 @@ const setDisable = () => {
 
 }
 const startGame = () => {
-    const [formElement] = form;
-    formElement.style.display = 'none';
+    form.innerHTML = '';
+    form.remove();
     zone.classList.add('game-zone');
     const loader = document.createElement('h2');
-    // loader.innerHTML = 'Loading...';
     zone.append(loader)
     createHeader();
     createMain();
     createFooter();
     [...main.children].map(child => {
         child.addEventListener('click', function () {
+            const [nextPlayer] = state.users.filter(user => user.name != state.nextPlayer)
+            state = { ...state, nextPlayer: nextPlayer.name }
             const drawX = () => {
                 state = { ...state, selectedtype: 'zero' }
                 context.beginPath();
@@ -138,7 +155,6 @@ const startGame = () => {
                 context.strokeStyle = '#48D2FE';
                 context.stroke();
                 draw2();
-
             }
             const draw2 = () => {
                 ctx.beginPath();
@@ -195,17 +211,22 @@ const startGame = () => {
 }
 const createHeader = () => {
     const score1 = document.createElement('div');
-    const status = document.createElement('div');
     const score2 = document.createElement('div');
-    [score1, status, score2].map(el => el.classList.add('header__item'));
-    score1.style.backgroundColor = '#48D2FE';
-    status.style.backgroundColor = '#BCDBF9';
-    score2.style.backgroundColor = '#E2BE00';
-    const [player1, player2] = state.users;
-    score1.innerHTML = player1.name;
-    score2.innerHTML = player2?.name ?? ' PC';
+    [score1, score2].map((el, index) => {
+        const { name } = state.users[index];
+        const span = document.createElement('span');
+        const p = document.createElement('p');
+        el.classList.add('header__item');
+        el.style.justifyContent = 'space-around';
+        span.innerHTML = name
+        p.innerHTML = 0;
+        p.classList.add = 'points'
+        el.append(span);
+        el.append(p);
+    });
+    score1.style.backgroundColor = state.selectedtype === 'zero' ? '#E2BE00' : '#48D2FE';
+    score2.style.backgroundColor = state.selectedtype === 'zero' ? '#48D2FE' : '#E2BE00';
     header.append(score1);
-    header.append(status);
     header.append(score2);
     zone.append(header)
 }
@@ -220,44 +241,60 @@ const createMain = () => {
     })
 }
 const createFooter = () => {
-    const [player1, player2] = state.users;
+    footer.innerHTML = '';
     const current = document.createElement('h2');
-    current.innerHTML = `Next step: player ${player1.name}!`
-    footer.append(current);
+
+    reloadButton.innerHTML = 'Start game again';
+    current.innerHTML = `Next step: player ${state.nextPlayer.toUpperCase()}!`
+    state.hasWinner || state.isDraw ? footer.append(reloadButton) : footer.append(current);
     zone.append(footer);
 }
 const drawHorizontalLine = (second, canvas) => {
-    const line = Math.round(second/3) + 1;
-                const cuttingArea = {
-                    1:40,
-                    2:140,
-                    3:240,
-                }
-                const ctx = canvas.getContext('2d');
-                ctx.beginPath();
-                ctx.moveTo(10, cuttingArea[line]);
-                ctx.lineTo(350, cuttingArea[line]);
-                ctx.lineWidth = 20;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = 'red';
-                ctx.stroke();
+    const line = Math.round(second / 3) + 1;
+    const lineVector = {
+        1: 40,
+        2: 140,
+        3: 240,
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.moveTo(10, lineVector[line]);
+    ctx.lineTo(350, lineVector[line]);
+    ctx.lineWidth = 15;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'red';
+    ctx.stroke();
 }
-const drawHDiagonalLine = (first, canvas) => {
-    console.log(first)
-                const x1 = first > 0 ? 360 : 20
-                const y1 = 20;
-                const x2 = first > 0 ? 20 : 360;
-                const y2 = 260;
-                const ctx = canvas.getContext('2d');
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.lineWidth = 20;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = 'red';
-                ctx.stroke();
+const drawVerticalLine = (first, canvas) => {
+    const column = first + 1;
+    const lineVector = {
+        1: 50,
+        2: 185,
+        3: 320
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.moveTo(lineVector[column], 10);
+    ctx.lineTo(lineVector[column], 270);
+    ctx.lineWidth = 15;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'red';
+    ctx.stroke();
+}
+const drawDiagonalLine = (first, canvas) => {
+    const x1 = first > 0 ? 360 : 20
+    const y1 = 20;
+    const x2 = first > 0 ? 20 : 360;
+    const y2 = 260;
+    const ctx = canvas.getContext('2d');
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineWidth = 15;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'red';
+    ctx.stroke();
 }
 const isWin = () => {
-    let hasWinner = false;
     for (let i = 0; i <= 7; i++) {
         const winCondition = winPatterns[i];
         let a = fields[winCondition[0]];
@@ -266,8 +303,12 @@ const isWin = () => {
         if (a === '' || b === '' || c === '') {
             continue;
         }
-        if (a === b && b === c) {
-            hasWinner = true;
+        else if (!fields.includes('')){
+           state.isDraw = true;
+            break;
+        }
+        else if (a === b && b === c) {
+            state.hasWinner = true;
             let first = winCondition[0];
             let second = winCondition[1];
             let last = winCondition[2];
@@ -275,31 +316,40 @@ const isWin = () => {
             const canvas = document.createElement('canvas');
             canvas.classList.add('line');
             canvas.width = 380;
-            canvas.height =280;
+            canvas.height = 280;
             main.append(canvas);
-            if (second + 1 == last){
-                drawHorizontalLine(second,canvas);
+            if (second + 1 == last) {
+                drawHorizontalLine(second, canvas);
             } else if (second + 3 == last) {
-            //    drawHDiagonalLine(first, canvas)
+                drawVerticalLine(first, canvas);
             } else {
-                drawHDiagonalLine(first, canvas)
+                drawDiagonalLine(first, canvas);
             }
-            [...main.children].map(child=>child.disabled = true)
+            [...main.children].map(child => child.disabled = true);
             break
-        }
+        };
     }
+    createFooter();
 }
+openStarPage();
 // E V E N T   H A N D L E R S
-buttonArray.forEach((button) => button.addEventListener('click', function () {
-    buttonArray.map(button => button.disabled = true)
-    state.mode = this.id;
-    hideStartPage();
-    setTimeout(() => {
-        createForm();
-    }, 1200);
-}))
+
 submitButton.addEventListener('click', function (e) {
     e.preventDefault()
     startGame();
 })
-
+reloadButton.addEventListener('click',function (){
+    document.querySelectorAll('canvas').forEach(canvas=>{
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+    })
+    fields =  ['', '', '', '', '', '', '', '', '']
+    state.hasWinner = false;
+    state.isDraw = false;
+    zone.innerHTML = '';
+    header.innerHTML = '';
+    main.innerHTML = '';
+    footer.innerHTML = '';
+    zone.remove();
+    openStarPage();
+})
